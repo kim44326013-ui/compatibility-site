@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>아주대 법전원 환산점수 계산기</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      padding: 20px;
+      margin: 0;
+      background: #f4f4f4;
+    }
+    h1 {
+      text-align: center;
+      font-size: 1.5rem;
+      color: #003366;
+    }
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+    label {
+      font-weight: bold;
+      margin-top: 10px;
+      display: block;
+    }
+    input, select {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      margin-bottom: 15px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      font-size: 1rem;
+    }
+    button {
+      width: 100%;
+      padding: 12px;
+      background-color: #003366;
+      color: white;
+      font-size: 1rem;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    .result {
+      margin-top: 20px;
+      padding: 15px;
+      background: #e8f0fe;
+      border: 1px solid #ccd;
+      font-size: 1.1rem;
+      border-radius: 5px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>아주대학교 법학전문대학원 환산점수 계산기</h1>
+
+    <label>언어 표준점수:</label>
+    <input type="number" id="langStd" min="0" max="100">
+
+    <label>추리 표준점수:</label>
+    <input type="number" id="logicStd" min="0" max="100">
+
+    <label>언어 백분위:</label>
+    <input type="number" id="langPercent" min="0" max="100">
+
+    <label>추리 백분위:</label>
+    <input type="number" id="logicPercent" min="0" max="100">
+
+    <label>학부성적 백분위:</label>
+    <input type="number" id="gpaPercent" min="0" max="100">
+
+    <label>영어 시험 종류:</label>
+    <select id="engType">
+      <option value="TOEIC">TOEIC</option>
+      <option value="TOEFL">TOEFL</option>
+      <option value="TEPS">TEPS</option>
+    </select>
+
+    <label>영어 점수:</label>
+    <input type="number" id="engScore">
+
+    <button onclick="calculateScore()">환산점수 계산하기</button>
+
+    <div class="result" id="result"></div>
+  </div>
+
+  <script>
+    function getEngConvertedScore(type, score) {
+      if (type === 'TOEIC') {
+        if (score >= 900) return 100;
+        if (score >= 865) return 98;
+        if (score >= 850) return 96;
+        if (score >= 815) return 94;
+        if (score >= 795) return 92;
+        if (score >= 770) return 90;
+        if (score >= 745) return 88;
+        if (score >= 720) return 85;
+        if (score >= 690) return 82;
+        if (score >= 670) return 77;
+        if (score >= 640) return 72;
+        if (score >= 615) return 66;
+        if (score >= 590) return 60;
+        return 40;
+      } else if (type === 'TOEFL') {
+        if (score >= 105) return 100;
+        if (score >= 100) return 98;
+        if (score >= 98) return 96;
+        if (score >= 93) return 94;
+        if (score >= 90) return 92;
+        if (score >= 87) return 90;
+        if (score >= 84) return 88;
+        if (score >= 81) return 85;
+        if (score >= 78) return 82;
+        if (score >= 77) return 77;
+        if (score >= 73) return 72;
+        if (score >= 70) return 66;
+        if (score >= 67) return 60;
+        return 40;
+      } else if (type === 'TEPS') {
+        if (score >= 370) return 100;
+        if (score >= 345) return 98;
+        if (score >= 336) return 96;
+        if (score >= 316) return 94;
+        if (score >= 306) return 92;
+        if (score >= 294) return 90;
+        if (score >= 283) return 88;
+        if (score >= 272) return 85;
+        if (score >= 260) return 82;
+        if (score >= 252) return 77;
+        if (score >= 241) return 72;
+        if (score >= 232) return 66;
+        if (score >= 224) return 60;
+        return 40;
+      }
+      return 40;
+    }
+
+    function calculateScore() {
+      const langStd = parseFloat(document.getElementById('langStd').value);
+      const logicStd = parseFloat(document.getElementById('logicStd').value);
+      const langPercent = parseFloat(document.getElementById('langPercent').value);
+      const logicPercent = parseFloat(document.getElementById('logicPercent').value);
+      const gpa = parseFloat(document.getElementById('gpaPercent').value);
+      const engType = document.getElementById('engType').value;
+      const engScore = parseFloat(document.getElementById('engScore').value);
+
+      if (
+        isNaN(langStd) ||
+        isNaN(logicStd) ||
+        isNaN(langPercent) ||
+        isNaN(logicPercent) ||
+        isNaN(gpa) ||
+        isNaN(engScore)
+      ) {
+        alert("모든 값을 빠짐없이 입력해주세요.");
+        return;
+      }
+
+      const leetStandard = ((langStd * 0.4 + logicStd * 0.6) * 0.8 + (langPercent * 0.4 + logicPercent * 0.6) * 0.2);
+      const leetScore = leetStandard * 0.25 + 5;
+
+      const gpaScore = gpa * 0.1 + 10;
+
+      const engConverted = getEngConvertedScore(engType, engScore);
+      const engScoreFinal = engConverted * 0.12 + 8;
+
+      const total = (leetScore + gpaScore + engScoreFinal).toFixed(2);
+
+      document.getElementById('result').innerHTML = `
+        🧾 법학적성시험 환산 점수: ${leetScore.toFixed(2)}점<br>
+        🎓 학부성적 환산 점수: ${gpaScore.toFixed(2)}점<br>
+        📘 영어성적 환산 점수: ${engScoreFinal.toFixed(2)}점<br>
+        ✅ 아주대 최종 환산점수: ${total}점
+      `;
+    }
+  </script>
+</body>
+</html>
